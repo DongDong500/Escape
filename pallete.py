@@ -8,6 +8,8 @@ import matplotlib.pyplot as plt
 from tqdm import tqdm
 from PIL import Image
 
+from datetime import datetime 
+
 def get_argparser():
     
     parser = argparse.ArgumentParser()
@@ -52,9 +54,23 @@ def main():
     print(sampleIM.format, sampleIM.size, sampleIM.mode)
     print(sampleMASK.format, sampleMASK.size, sampleMASK.mode)
     
+    im = np.array(sampleIM, np.uint8)
+    ma = np.array(sampleMASK, np.uint8) / 255
+    ma = np.array(ma, np.uint8)
+    print(im.shape, ma.shape)
+    
+    imma = Image.fromarray(im * ma)
+    timestamp = datetime.now()
+    tmp = str(timestamp.month) + '-' + str(timestamp.day) + '-' + str(timestamp.hour) + '-' + str(timestamp.minute) + '-' + str(timestamp.second)
+    print(tmp) 
+    imma.save(os.path.join(dstDir, 'masking-' + tmp + '.tif'))
+    imma.show()
+    
+    cv.imshow('test', im)
+    cv.waitKey()
+    
     sampleIM = cv.imread(os.path.join(dataDir, 'Raw data with gray', 'Mild_1_HT.tif'))
     cv.imshow('sample image', sampleIM)
-    cv.waitKey()
     cv.destroyAllWindows()
     
 if __name__ == "__main__":
